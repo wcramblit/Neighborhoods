@@ -3,7 +3,7 @@ This program is intended to help the user understand a new city by relating the 
 
 Instructions:
 1.  Add API key: You must request and add your own API key for this to
-	function. please add it to the document head under 'KEY = '
+	function. please add it to the 'neighborhood_classifier.py' head under 'KEY = '''
 2.  Run the program: the program will ask for an origin city, state and 
     destination city/state
 3.  Returns: Will return a dataframe indexed on neighborhood name_city, 
