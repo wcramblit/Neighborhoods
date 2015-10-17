@@ -1,0 +1,57 @@
+Summary:
+This program is intended to help the user understand a new city by relating the geographic neighborhoods of the new city to the city of origin. The results are based on data from Zillow's Get demographics API (https://www.zillow.com/howto/api/GetDemographics.htm) and will output clusters of similar neighborhoods. As long as a city is available in Zillow's API, it will be available for analysis here.
+
+Instructions:
+1.  Add API key: You must request and add your own API key for this to
+	function. please add it to the document head under 'KEY = '
+2.  Run the program: the program will ask for an origin city, state and 
+    destination city/state
+3.  Returns: Will return a dataframe indexed on neighborhood name_city, 
+	sorted by cluster ID, as well as an array of the fields used to create the clusters.
+
+Requirements:
+Python 2.7.3 or later
+Installed modules: requests, pandas, numpy, xml.etree.ElementTree, itertools, sqlite3, sklearn
+
+Other notes:
+In an effort to save API calls, this script will create a local db in its home directory called 'all_city_data.db', in which it will store and look up any existing data before making calls to the API.
+
+
+The problem:
+Being in a new, unfamiliar place is stressful. Whether moving, traveling for work or visiting for pleasure, at times one finds themself in an unfamiliar place, and the visual information around you can do a terrible job of helping you understand the area you are in (think Fulton Market in Chicago, or one of the many sexy Brooklyn neighborhoods). 
+
+How can a traveler go about getting an inherent understanding of the neighborhood they are visiting or considering based on objective information?
+
+The hypothesis:
+Topline demographic data including home values, changes in the real estate market, age of solds, family size and other publicly-available data are capable of explaining relationships between neighborhoods in otherwise diversely different cities.
+
+Data gathering:
+Zillow's API has a range of data but is delivered in XML format and is tremendously unreliable, delivering zeros, missing values and missing fields regularly. Data collection, therefore, was particularly challenging in this case. To work through this, ElementTree was selected and built into a series of error handling functions.
+
+The steps for data collection were as follows.
+1.  Accept user input
+2.  Examine local db to determine if the data already exists
+3.  If so, proceed with modeling, if not call Zillow neighborhood API
+4.  Collect list of neighborhoods for each city from neighborhood API
+5.  Loop through API calls for each city/neighborhood combination
+6.  Extract data from resulting API responses
+7.  Store data in local database
+8.  Extract necessary data, clean and proceed with modeling
+
+Data processing and modeling:
+Data cleaning and processing involved removal of NA values. First, the program eliminates any data dimensions that are impacting a majority of neighborhoods. Then the program removes any neighborhoods that have NA values. Overall, we typically end up with around a half of neighborhoods analyzed, with losses tending to be outlying neighborhoods and suburbs.
+
+Features for each analysis varied based on API limitations, so Kmeans was selected to perform unsupervised analysis of the data set. Because this was unsupervised, validation of results is complex. If used to predict other neighborhood attributes (as in 'Next Steps below'), validation will be possible.
+
+In order to keep clusters small, the value of K is set to 1/4 of the total number of neighborhoods included in model built by the script.
+
+Findings and conclusions:
+In some cases, Kmeans does a poor job of this. Cities with disparate sizes and outlier real estate markets (Austin, TX vs. San Francisco, CA, for example) are very difficult to compare and therefore results need improvement. However, clusters within individual cities are incredibly successful and relationships between larger cities seem to work very nicely.
+
+Several next steps are planned for version 2.0 to expand capabilities:
+1.  ID Better data: Identify source for cleaner and/or more robust data
+2.  Improve validation: Planned to publish model online to gather review of 
+	the model from the public
+3.  Further investigation: Can we predict other neighborhood data, like crime 
+	rates or average income, using this method? How valid is this model in that case?
+
